@@ -1,42 +1,33 @@
-# Base image FrankenPHP (Debian based)
-FROM dunglas/frankenphp:latest
+# Use the official FrankenPHP image with FPM + Caddy
+FROM dunglas/frankenphp:1.1.3-php8.2
 
-# Install system dependencies (Ubuntu/Debian)
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
-    git \
-    unzip \
-    curl \
-    libzip-dev \
-    libpq-dev \
-    libonig-dev \
-    && docker-php-ext-install zip pdo pdo_mysql pdo_pgsql
+    git unzip curl libzip-dev libpq-dev libonig-dev \
+    && docker-php-ext-install pdo pdo_mysql pdo_pgsql zip
 
 # Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Set working directory
+# Set working dir
 WORKDIR /app
 
-# Copy project files
+# Copy app files
 COPY . .
 
-# Install PHP dependencies
+# Install dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Clear Laravel caches
+# Laravel cache
 RUN php artisan config:clear \
-    && php artisan route:clear \
-    && php artisan view:clear
+ && php artisan route:clear \
+ && php artisan view:clear \
+ && php artisan config:cache \
+ && php artisan route:cache \
+ && php artisan view:cache
 
-# Cache Laravel configurations
-RUN php artisan config:cache \
-    && php artisan route:cache \
-    && php artisan view:cache
-
-# Expose port used by FrankenPHP
+# Expose FrankenPHP port
 EXPOSE 8080
 
-# Start FrankenPHP using config file at root
-CMD php artisan migrate --force && \
-    frankenphp --config=/app/frankenphp.yaml
-
+# Start command
+CMD php artisan migrate --force && frankenphp php-server --config=/app/frankenphp.yaml
