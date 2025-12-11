@@ -36,6 +36,6 @@ RUN php artisan config:cache \
 # Expose port used by FrankenPHP
 EXPOSE 8080
 
-# Run migrations then start server
+# Start FrankenPHP using config file at root
 CMD php artisan migrate --force && \
-    frankenphp php-server --config=config/frankenphp.yaml
+    frankenphp run --config=/app/frankenphp.yaml
