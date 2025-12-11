@@ -1,4 +1,7 @@
+http:
+  address: 0.0.0.0:8080
+
 workers:
   app:
-    command: php public/index.php
-    listen: 0.0.0.0:8080
+    type: php
+    file: public/index.php
