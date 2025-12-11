@@ -38,4 +38,5 @@ EXPOSE 8080
 
 # Start FrankenPHP using config file at root
 CMD php artisan migrate --force && \
-    frankenphp run --config=/app/frankenphp.yaml
+    frankenphp --config=/app/frankenphp.yaml
+
