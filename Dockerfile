@@ -30,4 +30,6 @@ RUN php artisan config:clear \
 EXPOSE 8080
 
 # Start command
-CMD php artisan migrate --force && frankenphp php-server --config=/app/frankenphp.yaml
+CMD php artisan migrate --force && \
+    frankenphp php-server --config=frankenphp.yaml
+
