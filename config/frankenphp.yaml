@@ -1,0 +1,4 @@
+workers:
+  app:
+    command: php public/index.php
+    listen: 0.0.0.0:8080
