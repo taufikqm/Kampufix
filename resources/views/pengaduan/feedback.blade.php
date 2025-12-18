@@ -95,62 +95,78 @@
                 </div>
             @endif
 
-            <!-- Detail Pengaduan Card -->
-            <div class="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
+            <!-- Detail Pengaduan Card (Read Only) -->
+            <div class="bg-gray-50 rounded-xl border border-gray-200 p-6 space-y-4">
                 <div class="flex items-center justify-between">
-                    <h2 class="text-lg font-bold text-primary">{{ $pengaduan->subjek }}</h2>
+                    <div>
+                        <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">Ringkasan Laporan Anda</span>
+                        <h2 class="text-lg font-bold text-gray-900 mt-1">{{ $pengaduan->subjek }}</h2>
+                    </div>
                     <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-green-100 text-green-700">
                         Selesai
                     </span>
                 </div>
-                <p class="text-sm text-gray-600">Dilaporkan pada: {{ $pengaduan->created_at->translatedFormat('d M Y') }}</p>
-                <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                <div class="text-sm text-gray-600">
+                    Dilaporkan pada: {{ $pengaduan->created_at->translatedFormat('d F Y') }}
+                </div>
+                <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
                     <p class="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">{{ $pengaduan->deskripsi }}</p>
                 </div>
             </div>
 
             <!-- Feedback Form Card -->
-            <div class="bg-white rounded-xl border border-gray-200 p-6 space-y-6">
-                <h3 class="text-lg font-bold text-gray-900">Berikan Ulasan Anda</h3>
+            <div class="bg-white rounded-xl border border-gray-200 p-6 space-y-6 shadow-sm">
+                <div>
+                    <h3 class="text-xl font-bold text-gray-900">Berikan Ulasan & Feedback</h3>
+                    <p class="text-gray-500 text-sm mt-1">Bantu kami meningkatkan kualitas layanan KampuFix</p>
+                </div>
                 
-                <form method="POST" action="{{ route('pengaduan.feedback', $pengaduan->id) }}" class="space-y-6">
+                <form method="POST" action="{{ route('pengaduan.feedback', $pengaduan->id) }}" class="space-y-6" id="feedbackForm">
                     @csrf
                     @method('PATCH')
                     
-                    <div>
-                        <p class="text-sm font-medium text-gray-700 mb-3">Bagaimana penilaian Anda terhadap penanganan laporan ini?</p>
-                        <div class="flex items-center gap-2" id="rating-container">
+                    <div class="bg-yellow-50/50 p-6 rounded-xl border border-yellow-100 text-center">
+                        <p class="text-base font-medium text-gray-800 mb-4">Seberapa puas Anda dengan hasil perbaikan ini?</p>
+                        
+                        <div class="flex justify-center items-center gap-3 mb-2" id="rating-container">
                             @for($i=1; $i<=5; $i++)
                                 <button type="button" 
                                         onclick="setRating({{$i}})" 
+                                        onmouseenter="hoverRating({{$i}})"
+                                        onmouseleave="resetHover()"
                                         id="star{{$i}}"
-                                        class="focus:outline-none transition-colors">
-                                    <span class="material-symbols-outlined text-4xl text-gray-300">star</span>
+                                        class="focus:outline-none transition-transform hover:scale-110 p-1">
+                                    <span class="material-symbols-outlined text-5xl text-gray-300 transition-colors duration-200">star</span>
                                 </button>
                             @endfor
                         </div>
-                        <input type="hidden" name="rating" id="rating-input" required>
+                        <p id="rating-text" class="text-sm font-medium text-gray-500 h-5"></p>
+
+                        <input type="hidden" name="rating" id="rating-input" required autocomplete="off">
                         @error('rating')
-                            <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
+                            <div class="text-red-600 text-sm mt-2 font-medium bg-red-50 py-1 px-3 rounded inline-block">{{ $message }}</div>
                         @enderror
+                        <div id="rating-error" class="hidden text-red-600 text-sm mt-2 font-medium bg-red-50 py-1 px-3 rounded inline-block">Silakan pilih rating bintang terlebih dahulu</div>
                     </div>
 
                     <div>
-                        <label for="feedback" class="block text-sm font-medium text-gray-700 mb-2">Komentar (Opsional)</label>
+                        <label for="feedback" class="block text-sm font-semibold text-gray-700 mb-2">Ceritakan pengalaman Anda (Opsional)</label>
                         <textarea name="feedback" 
                                   id="feedback" 
-                                  rows="6"
+                                  rows="4"
                                   maxlength="500"
-                                  class="w-full rounded-lg border border-gray-300 focus:border-primary focus:ring-2 focus:ring-primary/20 px-4 py-3 text-sm resize-none"
-                                  placeholder="Tuliskan komentar Anda di sini...">{{ old('feedback') }}</textarea>
+                                  class="w-full rounded-xl border-gray-300 focus:border-red-500 focus:ring-red-500 text-sm"
+                                  placeholder="Contoh: Teknisi datang tepat waktu, perbaikan sangat rapi, dan ramah...">{{ old('feedback') }}</textarea>
                         @error('feedback')
                             <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
                         @enderror
                     </div>
 
-                    <div class="flex justify-end">
+                    <div class="flex justify-end pt-4 border-t border-gray-100">
                         <button type="submit" 
-                                class="inline-flex items-center gap-2 bg-primary hover:bg-red-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors">
+                                onclick="return validateForm()"
+                                class="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white font-bold px-8 py-3 rounded-xl transition-all shadow-md hover:shadow-lg transform active:scale-95">
+                            <span class="material-symbols-outlined">send</span>
                             Kirim Feedback
                         </button>
                     </div>
@@ -161,52 +177,62 @@
 </div>
 
 <script>
-    let selectedRating = 0;
+    let currentRating = 0;
+    const ratingTexts = [
+        '',
+        'Sangat Kecewa 😞',
+        'Kurang Puas 🙁',
+        'Cukup Puas 😐',
+        'Puas 🙂',
+        'Sangat Puas! 🤩'
+    ];
 
-    function setRating(rating) {
-        selectedRating = rating;
-        document.getElementById('rating-input').value = rating;
-        
-        // Update star display
+    function updateStars(rating) {
         for(let i = 1; i <= 5; i++) {
-            const star = document.getElementById('star' + i);
-            const icon = star.querySelector('.material-symbols-outlined');
+            const starIcon = document.querySelector(`#star${i} span`);
             if (i <= rating) {
-                icon.textContent = 'star';
-                icon.classList.remove('text-gray-300');
-                icon.classList.add('text-yellow-400');
+                starIcon.classList.remove('text-gray-300');
+                starIcon.classList.add('text-yellow-400', 'fill-current');
+                // Google Material Symbols 'FILL' variation logic if needed via class or style
+                starIcon.style.fontVariationSettings = "'FILL' 1";
             } else {
-                icon.textContent = 'star';
-                icon.classList.remove('text-yellow-400');
-                icon.classList.add('text-gray-300');
+                starIcon.classList.remove('text-yellow-400', 'fill-current');
+                starIcon.classList.add('text-gray-300');
+                starIcon.style.fontVariationSettings = "'FILL' 0";
             }
+        }
+        
+        const textEl = document.getElementById('rating-text');
+        if(rating > 0) {
+            textEl.textContent = ratingTexts[rating];
+            textEl.classList.add('text-yellow-600');
+        } else {
+            textEl.textContent = '';
         }
     }
 
-    // Hover effect untuk stars
-    document.addEventListener('DOMContentLoaded', function() {
-        for(let i = 1; i <= 5; i++) {
-            const star = document.getElementById('star' + i);
-            star.addEventListener('mouseenter', function() {
-                for(let j = 1; j <= i; j++) {
-                    const hoverStar = document.getElementById('star' + j);
-                    const hoverIcon = hoverStar.querySelector('.material-symbols-outlined');
-                    if (!hoverIcon.classList.contains('text-yellow-400')) {
-                        hoverIcon.classList.add('text-yellow-300');
-                    }
-                }
-            });
-            star.addEventListener('mouseleave', function() {
-                for(let j = 1; j <= 5; j++) {
-                    const hoverStar = document.getElementById('star' + j);
-                    const hoverIcon = hoverStar.querySelector('.material-symbols-outlined');
-                    if (j > selectedRating) {
-                        hoverIcon.classList.remove('text-yellow-300');
-                    }
-                }
-            });
+    function setRating(rating) {
+        currentRating = rating;
+        document.getElementById('rating-input').value = rating;
+        document.getElementById('rating-error').classList.add('hidden');
+        updateStars(rating);
+    }
+
+    function hoverRating(rating) {
+        updateStars(rating);
+    }
+
+    function resetHover() {
+        updateStars(currentRating);
+    }
+
+    function validateForm() {
+        if (currentRating === 0) {
+            document.getElementById('rating-error').classList.remove('hidden');
+            return false;
         }
-    });
+        return true;
+    }
 </script>
 </body>
 </html>

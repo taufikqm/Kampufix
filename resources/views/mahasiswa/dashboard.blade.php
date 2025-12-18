@@ -82,6 +82,12 @@
                         <p class="text-sm font-medium">Riwayat Feedback</p>
                     </a>
 
+                    <a class="flex items-center gap-3 px-3 py-2 rounded-lg {{ request()->is('profile*') ? 'bg-primary/10 text-primary' : 'hover:bg-primary/10' }}"
+                       href="{{ route('profile.show') }}">
+                        <span class="material-symbols-outlined {{ request()->is('profile*') ? 'text-primary' : '' }}">person</span>
+                        <p class="text-sm font-medium">Profil Saya</p>
+                    </a>
+
                 </div>
             </div>
 
@@ -152,22 +158,30 @@
                             </span>
                             </td>
                             <td class="p-4 text-sm text-left align-middle">
-                                @if($p->status === 'Menunggu')
-                                    <div class="flex items-center gap-3">
-                                        <a href="{{ route('pengaduan.edit', $p->id) }}" class="inline-flex items-center justify-center w-5 h-5 text-gray-500 hover:text-gray-700 transition" title="Edit">
+                                <div class="flex items-center gap-3">
+                                    {{-- Detail Button (Always Visible) --}}
+                                    <a href="{{ route('mahasiswa.pengaduan.detail', $p->id) }}" class="text-blue-600 hover:text-blue-800 font-medium text-sm flex items-center gap-1">
+                                        <span class="material-symbols-outlined text-lg">visibility</span>
+                                        Detail
+                                    </a>
+
+                                    @if($p->status === 'Menunggu')
+                                        <div class="h-4 w-px bg-gray-300 mx-1"></div>
+                                        <a href="{{ route('pengaduan.edit', $p->id) }}" class="inline-flex items-center justify-center text-gray-500 hover:text-gray-700 transition" title="Edit">
                                             <span class="material-symbols-outlined text-xl" style="line-height: 1; font-size: 20px;">edit</span>
                                         </a>
                                         <form action="{{ route('pengaduan.destroy', $p->id) }}" method="POST" class="inline-flex items-center" onsubmit="return confirm('Apakah Anda yakin ingin menghapus pengaduan ini?');">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="inline-flex items-center justify-center w-5 h-5 text-red-500 hover:text-red-700 transition" title="Hapus">
+                                            <button type="submit" class="inline-flex items-center justify-center text-red-500 hover:text-red-700 transition" title="Hapus">
                                                 <span class="material-symbols-outlined text-xl" style="line-height: 1; font-size: 20px;">delete</span>
                                             </button>
                                         </form>
-                                    </div>
-                                @elseif($p->status === 'Selesai' && !$p->rating && !$p->feedback)
-                                    <a href="{{ route('mahasiswa.pengaduan.feedback', $p->id) }}" class="text-green-600 hover:text-green-700 font-medium text-sm">Berikan Feedback</a>
-                                @endif
+                                    @elseif($p->status === 'Selesai' && !$p->rating && !$p->feedback)
+                                        <div class="h-4 w-px bg-gray-300 mx-1"></div>
+                                        <a href="{{ route('mahasiswa.pengaduan.feedback', $p->id) }}" class="text-green-600 hover:text-green-700 font-medium text-sm">Beri Feedback</a>
+                                    @endif
+                                </div>
                             </td>
                         </tr>
                     @endforeach

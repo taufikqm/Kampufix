@@ -155,8 +155,4 @@
     </div>
 </div>
 
-<!-- Floating Action Button -->
-<button class="fixed bottom-8 right-8 w-14 h-14 bg-gray-800 hover:bg-gray-900 text-white rounded-full shadow-lg flex items-center justify-center transition-all hover:scale-110">
-    <span class="material-symbols-outlined text-white">edit</span>
-</button>
 @endsection

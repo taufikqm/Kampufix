@@ -114,8 +114,70 @@ class TeknisiDashboardController extends Controller
 
     // Tugas Saya -> detail interaktif (fitur aksi, dsb)
     public function taskDetail($id) {
-        $pengaduan = \App\Models\Pengaduan::where('teknisi_id', auth()->id())->findOrFail($id);
+        $pengaduan = \App\Models\Pengaduan::with(['kategori', 'progressPengerjaans'])->where('teknisi_id', auth()->id())->findOrFail($id);
         return view('teknisi.detail', compact('pengaduan'));
+    }
+
+    public function storeProgress(Request $request, $id)
+    {
+        $request->validate([
+            'keterangan' => 'required|string',
+            'foto' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:5120',
+        ]);
+
+        $pengaduan = Pengaduan::where('teknisi_id', auth()->id())->findOrFail($id);
+
+        $fotoPath = null;
+        if ($request->hasFile('foto')) {
+            $fotoPath = $request->file('foto')->store('progress_foto', 'public');
+        }
+
+        \App\Models\ProgressPengerjaan::create([
+            'pengaduan_id' => $pengaduan->id,
+            'keterangan' => $request->keterangan,
+            'foto' => $fotoPath,
+        ]);
+
+        return back()->with('success', 'Progress berhasil ditambahkan');
+    }
+
+    public function updateProgress(Request $request, $id)
+    {
+        $request->validate([
+            'keterangan' => 'required|string',
+            'foto' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:5120',
+        ]);
+
+        $progress = \App\Models\ProgressPengerjaan::whereHas('pengaduan', function($q) {
+            $q->where('teknisi_id', auth()->id());
+        })->findOrFail($id);
+
+        if ($request->hasFile('foto')) {
+            if ($progress->foto) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($progress->foto);
+            }
+            $progress->foto = $request->file('foto')->store('progress_foto', 'public');
+        }
+
+        $progress->keterangan = $request->keterangan;
+        $progress->save();
+
+        return back()->with('success', 'Progress berhasil diperbarui');
+    }
+
+    public function destroyProgress($id)
+    {
+        $progress = \App\Models\ProgressPengerjaan::whereHas('pengaduan', function($q) {
+            $q->where('teknisi_id', auth()->id());
+        })->findOrFail($id);
+
+        if ($progress->foto) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($progress->foto);
+        }
+
+        $progress->delete();
+
+        return back()->with('success', 'Progress berhasil dihapus');
     }
 }
 

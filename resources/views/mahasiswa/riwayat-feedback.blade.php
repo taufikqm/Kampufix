@@ -5,6 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Riwayat Feedback - KampuFix</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#D93025",
+                        "background-light": "#FAFAFA",
+                        "background-dark": "#121212",
+                        "surface-light": "#FFFFFF",
+                        "surface-dark": "#1E1E1E",
+                        "text-primary-light": "#4F4F4F",
+                        "text-primary-dark": "#E0E0E0",
+                        "text-secondary-light": "#757575",
+                        "text-secondary-dark": "#BDBDBD",
+                        "border-light": "#E0E0E0",
+                        "border-dark": "#424242",
+                    }
+                }
+            }
+        }
+    </script>
+
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
     <style>
@@ -20,7 +44,11 @@
         <div class="p-4 flex flex-col h-full justify-between">
             <div class="flex flex-col gap-6">
                 <div class="flex items-center gap-3 text-primary px-3">
-                    <span class="material-symbols-outlined text-3xl text-primary">apartment</span>
+                    <svg class="h-8 w-8 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                              d="M10 2a8 8 0 100 16 8 8 0 000-16zM8.707 14.707a1 1 0 001.414 0L14 10.828V12a1 1 0 102 0V8a1 1 0 00-1-1h-4a1 1 0 100 2h1.172L8.707 12.293a1 1 0 000 1.414zM6 6a1 1 0 100 2h4a1 1 0 100-2H6z">
+                        </path>
+                    </svg>
                     <h2 class="text-xl font-bold text-primary">KampuFix</h2>
                 </div>
                 <div class="flex flex-col gap-2 mt-3">

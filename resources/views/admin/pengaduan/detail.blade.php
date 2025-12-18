@@ -112,6 +112,34 @@
                 </div>
                 @endif
 
+                <!-- Progress Pengerjaan (Timeline) -->
+                @if($p->progressPengerjaans->count() > 0)
+                <div class="pt-6 border-t border-gray-200 space-y-4">
+                    <div>
+                        <p class="text-xs uppercase tracking-wide text-gray-400">Timeline Pengerjaan</p>
+                        <h3 class="text-lg font-semibold text-gray-900 mt-1">Progress Teknisi</h3>
+                    </div>
+                    <div class="space-y-4">
+                        @foreach($p->progressPengerjaans as $progress)
+                            <div class="flex gap-4 p-4 bg-gray-50 rounded-xl border border-gray-100">
+                                <div class="flex-shrink-0 mt-1">
+                                    <span class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center">
+                                        <span class="material-symbols-outlined text-sm">history</span>
+                                    </span>
+                                </div>
+                                <div class="flex-1 space-y-1">
+                                    <p class="text-sm text-gray-500">{{ $progress->created_at->translatedFormat('d F Y, H:i') }}</p>
+                                    <p class="text-gray-800">{{ $progress->keterangan }}</p>
+                                    @if($progress->foto)
+                                        <img src="{{ asset('storage/' . $progress->foto) }}" class="w-24 h-24 object-cover rounded-lg border cursor-pointer mt-2" onclick="window.open(this.src)">
+                                    @endif
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+                @endif
+
                 <!-- Feedback Mahasiswa -->
                 @if($p->status === 'Selesai' && ($p->rating || $p->feedback))
                     <div class="pt-6 border-t border-gray-200 space-y-4">

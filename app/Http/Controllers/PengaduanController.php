@@ -12,7 +12,8 @@ class PengaduanController extends Controller
 {
     public function create()
     {
-        return view('pengaduan.form');
+        $kategoris = \App\Models\Kategori::orderBy('nama')->get();
+        return view('pengaduan.form', compact('kategoris'));
     }
 
     public function store(Request $request)
@@ -22,6 +23,7 @@ class PengaduanController extends Controller
             'nim' => 'required',
             'email' => 'required|email',
             'lokasi' => 'nullable|string|max:255',
+            'kategori_id' => 'nullable|exists:kategoris,id',
             'subjek' => 'required',
             'deskripsi' => 'required',
             'foto' => 'image|mimes:jpg,png,jpeg|max:2048'
@@ -41,6 +43,7 @@ class PengaduanController extends Controller
         Pengaduan::create([
             'user_id' => Auth::id(),
             'kode' => $kode,
+            'kategori_id' => $request->kategori_id,
             'nama' => $request->nama,
             'nim' => $request->nim,
             'email' => $request->email,
@@ -67,7 +70,7 @@ class PengaduanController extends Controller
 
     public function detail($id)
     {
-        $pengaduan = Pengaduan::with('teknisi')
+        $pengaduan = Pengaduan::with(['teknisi', 'kategori', 'progressPengerjaans'])
             ->where('user_id', Auth::id())
             ->findOrFail($id);
 

@@ -21,7 +21,7 @@ class AdminPengaduanController extends Controller
         $teknisiList = User::where('role', 'teknisi')->get();
         
         return view('admin.pengaduan.detail', [
-            'p' => Pengaduan::with('teknisi')->findOrFail($id),
+            'p' => Pengaduan::with(['teknisi', 'progressPengerjaans'])->findOrFail($id),
             'teknisiList' => $teknisiList
         ]);
     }

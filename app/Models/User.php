@@ -18,6 +18,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role', // 'admin' atau 'mahasiswa'
+        'profile_photo_path',
     ];
 
     /**

@@ -8,10 +8,12 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('pengaduans', function (Blueprint $table) {
-            $table->float('rating')->nullable()->after('status');
-            $table->text('feedback')->nullable()->after('rating');
-        });
+        if (!Schema::hasColumn('pengaduans', 'rating')) {
+            Schema::table('pengaduans', function (Blueprint $table) {
+                $table->float('rating')->nullable()->after('status');
+                $table->text('feedback')->nullable()->after('rating');
+            });
+        }
     }
 
     public function down(): void

@@ -72,33 +72,18 @@
                                class="block px-3 py-2 rounded-lg text-sm text-gray-600 hover:bg-red-50">
                                 Detail Pengaduan
                             </a>
-                            <a href="#"
-                               class="block px-3 py-2 rounded-lg text-sm text-gray-600 hover:bg-red-50">
+                            <a href="{{ route('admin.kategori.index') }}"
+                               class="block px-3 py-2 rounded-lg text-sm {{ request()->routeIs('admin.kategori.*') ? 'text-red-600 font-medium bg-red-50' : 'text-gray-600 hover:bg-red-50' }}">
                                 Kategori
                             </a>
                         </div>
                     </div>
 
                     <!-- Menu lainnya -->
-                    <a href="#"
-                       class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-red-50">
-                        <span class="material-symbols-outlined">group</span>
-                        <p class="text-sm font-medium">Manajemen User</p>
-                    </a>
-                    <a href="#"
-                       class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-red-50">
+                    <a href="{{ route('admin.feedback.index') }}"
+                       class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('admin.feedback.index') ? 'text-red-600 bg-red-50' : 'text-gray-600 hover:bg-red-50' }}">
                         <span class="material-symbols-outlined">feedback</span>
                         <p class="text-sm font-medium">Feedback Pengguna</p>
-                    </a>
-                    <a href="#"
-                       class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-red-50">
-                        <span class="material-symbols-outlined">bar_chart</span>
-                        <p class="text-sm font-medium">Laporan / Analytics</p>
-                    </a>
-                    <a href="#"
-                       class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-red-50">
-                        <span class="material-symbols-outlined">settings</span>
-                        <p class="text-sm font-medium">Settings</p>
                     </a>
                 </nav>
                 </div>
@@ -130,6 +115,15 @@
                         <div class="h-10 w-10 rounded-full bg-red-100 text-red-600 flex items-center justify-center font-semibold cursor-pointer hover:bg-red-200 transition">
                             {{ strtoupper(substr(Auth::user()->name ?? 'A', 0, 1)) }}
                         </div>
+
+                        <!-- Logout Button -->
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-red-600 text-white text-sm font-semibold hover:bg-red-700 transition">
+                                <span class="material-symbols-outlined text-base">logout</span>
+                                Logout
+                            </button>
+                        </form>
                     </div>
                 </div>
             </header>

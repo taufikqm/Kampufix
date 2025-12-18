@@ -8,10 +8,9 @@ return new class extends Migration
 {
     public function up(): void
     {
-        if (!Schema::hasColumn('pengaduans', 'catatan_perbaikan')) {
+        if (!Schema::hasColumn('pengaduans', 'kategori_id')) {
             Schema::table('pengaduans', function (Blueprint $table) {
-                $table->text('catatan_perbaikan')->nullable()->after('deskripsi');
-                $table->string('foto_perbaikan')->nullable()->after('foto');
+                $table->foreignId('kategori_id')->nullable()->after('teknisi_id')->constrained('kategoris')->nullOnDelete();
             });
         }
     }
@@ -19,8 +18,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('pengaduans', function (Blueprint $table) {
-            $table->dropColumn(['catatan_perbaikan', 'foto_perbaikan']);
+            $table->dropForeign(['kategori_id']);
+            $table->dropColumn('kategori_id');
         });
     }
 };
-

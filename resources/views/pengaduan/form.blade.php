@@ -71,37 +71,60 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
             <div>
                 <label class="font-bold">Nama Lengkap</label>
-                <input type="text" name="nama" class="w-full border rounded  p-3 mt-1" placeholder="Masukkan nama lengkap">
+                <input type="text" name="nama" value="{{ old('nama', Auth::user()->name) }}" class="w-full border rounded p-3 mt-1 @error('nama') border-red-500 @enderror" placeholder="Masukkan nama lengkap">
+                @error('nama') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
             </div>
 
             <div>
                 <label class="font-bold">NIM</label>
-                <input type="text" name="nim" class="w-full border rounded p-3 mt-1" placeholder="Masukkan NIM Anda">
+                <input type="text" name="nim" value="{{ old('nim') }}" class="w-full border rounded p-3 mt-1 @error('nim') border-red-500 @enderror" placeholder="Masukkan NIM Anda">
+                @error('nim') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
             </div>
         </div>
 
         <div class="mb-5">
             <label class="font-bold">Alamat Email</label>
-            <input type="email" name="email" class="w-full border rounded p-3 mt-1" placeholder="contoh@email.com">
+            <input type="email" name="email" value="{{ old('email', Auth::user()->email) }}" class="w-full border rounded p-3 mt-1 @error('email') border-red-500 @enderror" placeholder="contoh@email.com">
+            @error('email') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+        </div>
+
+        <div class="mb-5">
+            <label class="font-bold">Kategori Pengaduan</label>
+            <select name="kategori_id" class="w-full border rounded p-3 mt-1 bg-white @error('kategori_id') border-red-500 @enderror">
+                <option value="">-- Pilih Kategori --</option>
+                @foreach($kategoris as $kategori)
+                    <option value="{{ $kategori->id }}" {{ old('kategori_id') == $kategori->id ? 'selected' : '' }}>{{ $kategori->nama }}</option>
+                @endforeach
+            </select>
+            @error('kategori_id') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+        </div>
+
+        <div class="mb-5">
+            <label class="font-bold">Lokasi</label>
+            <input type="text" name="lokasi" value="{{ old('lokasi') }}" class="w-full border rounded p-3 mt-1 @error('lokasi') border-red-500 @enderror" placeholder="Contoh: Gedung A Lantai 2 Ruang 201">
+            @error('lokasi') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
         </div>
 
         <div class="mb-5">
             <label class="font-bold">Subjek Pengaduan</label>
-            <input type="text" name="subjek" class="w-full border rounded p-3 mt-1" placeholder="Masukkan subjek pengaduan Anda">
+            <input type="text" name="subjek" value="{{ old('subjek') }}" class="w-full border rounded p-3 mt-1 @error('subjek') border-red-500 @enderror" placeholder="Masukkan subjek pengaduan Anda">
+            @error('subjek') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
         </div>
 
         <div class="mb-5">
             <label class="font-bold">Upload Foto (Opsional)</label>
-            <div class="border border-dashed rounded p-6 text-center text-gray-500 mt-2">
+            <div class="border border-dashed rounded p-6 text-center text-gray-500 mt-2 @error('foto') border-red-500 @enderror">
                 <input type="file" name="foto" class="w-full cursor-pointer">
                 <p class="text-sm mt-2">SVG, PNG, JPG, GIF (Max. 800×400px)</p>
             </div>
+            @error('foto') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
         </div>
 
         <div class="mb-5">
             <label class="font-bold">Deskripsi Lengkap</label>
-            <textarea name="deskripsi" rows="4" class="w-full border rounded p-3 mt-1"
-            placeholder="Jelaskan masalah Anda secara detail..."></textarea>
+            <textarea name="deskripsi" rows="4" class="w-full border rounded p-3 mt-1 @error('deskripsi') border-red-500 @enderror"
+            placeholder="Jelaskan masalah Anda secara detail...">{{ old('deskripsi') }}</textarea>
+            @error('deskripsi') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
         </div>
 
         <button type="submit" class="w-full bg-primary text-white p-3 rounded text-lg font-bold hover:bg-primary/80">

@@ -48,6 +48,24 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
         ->name('admin.pengaduan.detail');
     Route::post('/admin/pengaduan/{id}', [AdminPengaduanController::class, 'update'])
         ->name('admin.pengaduan.update');
+
+    // Kategori Routes
+    Route::get('/admin/kategori', [\App\Http\Controllers\Admin\AdminKategoriController::class, 'index'])
+        ->name('admin.kategori.index');
+    Route::get('/admin/kategori/create', [\App\Http\Controllers\Admin\AdminKategoriController::class, 'create'])
+        ->name('admin.kategori.create');
+    Route::post('/admin/kategori', [\App\Http\Controllers\Admin\AdminKategoriController::class, 'store'])
+        ->name('admin.kategori.store');
+    Route::get('/admin/kategori/{id}/edit', [\App\Http\Controllers\Admin\AdminKategoriController::class, 'edit'])
+        ->name('admin.kategori.edit');
+    Route::put('/admin/kategori/{id}', [\App\Http\Controllers\Admin\AdminKategoriController::class, 'update'])
+        ->name('admin.kategori.update');
+    Route::delete('/admin/kategori/{id}', [\App\Http\Controllers\Admin\AdminKategoriController::class, 'destroy'])
+        ->name('admin.kategori.destroy');
+
+    // Feedback Routes
+    Route::get('/admin/feedback', [\App\Http\Controllers\Admin\AdminFeedbackController::class, 'index'])
+        ->name('admin.feedback.index');
 });
 
 Route::middleware(['auth', 'role:teknisi'])->group(function () {
@@ -63,10 +81,19 @@ Route::middleware(['auth', 'role:teknisi'])->group(function () {
         ->name('teknisi.pengaduan.dokumentasi.store');
     Route::get('/teknisi/tugas', [TeknisiDashboardController::class, 'tasks'])->name('teknisi.tasks');
     Route::get('/teknisi/tugas/{id}', [TeknisiDashboardController::class, 'taskDetail'])->name('teknisi.tasks.detail');
+    
+    // Progress Routes
+    Route::post('/teknisi/progress/{id}', [TeknisiDashboardController::class, 'storeProgress'])->name('teknisi.progress.store');
+    Route::put('/teknisi/progress/{id}', [TeknisiDashboardController::class, 'updateProgress'])->name('teknisi.progress.update');
+    Route::delete('/teknisi/progress/{id}', [TeknisiDashboardController::class, 'destroyProgress'])->name('teknisi.progress.destroy');
+
     Route::get('/teknisi/feedback', [\App\Http\Controllers\Teknisi\TeknisiFeedbackController::class, 'index'])->name('teknisi.feedback');
 });
 
 Route::middleware('auth')->group(function () {
+    Route::get('/profile', [\App\Http\Controllers\ProfileController::class, 'show'])->name('profile.show');
+    Route::post('/profile', [\App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile/photo', [\App\Http\Controllers\ProfileController::class, 'destroyPhoto'])->name('profile.photo.destroy');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
 

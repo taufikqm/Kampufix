@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (!Schema::hasColumn('users', 'role')) {
+        if (!Schema::hasColumn('users', 'profile_photo_path')) {
             Schema::table('users', function (Blueprint $table) {
-                $table->string('role')->default('mahasiswa');
+                $table->string('profile_photo_path', 2048)->nullable()->after('email');
             });
         }
     }
@@ -24,7 +24,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('role');
+            $table->dropColumn('profile_photo_path');
         });
     }
 };

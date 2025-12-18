@@ -35,9 +35,6 @@
                         ['label' => 'Dashboard', 'icon' => 'dashboard', 'route' => 'teknisi.dashboard'],
                         ['label' => 'Tugas Saya', 'icon' => 'assignment', 'route' => 'teknisi.tasks'],
                         ['label' => 'Feedback', 'icon' => 'star', 'route' => 'teknisi.feedback'],
-                        ['label' => 'Riwayat Tugas', 'icon' => 'history', 'route' => null],
-                        ['label' => 'Laporan', 'icon' => 'description', 'route' => null],
-                        ['label' => 'Pengaturan', 'icon' => 'settings', 'route' => null],
                     ];
                 @endphp
 

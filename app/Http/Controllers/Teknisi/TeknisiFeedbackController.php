@@ -11,11 +11,12 @@ class TeknisiFeedbackController extends Controller
     public function index(Request $request)
     {
         $feedbacks = Pengaduan::where('teknisi_id', auth()->id())
-            ->whereNotNull('rating')
-            ->orWhere(function($q) {
-                $q->whereNotNull('feedback')->where('teknisi_id', auth()->id());
+            ->where(function($q) {
+                $q->whereNotNull('rating')
+                  ->orWhereNotNull('feedback');
             })
-            ->orderByDesc('created_at')
+            ->with('user') // Eager load user pelapor
+            ->orderByDesc('updated_at')
             ->get();
         return view('teknisi.feedback', compact('feedbacks'));
     }

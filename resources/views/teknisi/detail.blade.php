@@ -70,6 +70,17 @@
                     <p class="text-sm text-gray-500 mb-1">Subjek Pengaduan</p>
                     <p class="text-base font-medium text-gray-900">{{ $pengaduan->subjek }}</p>
                 </div>
+
+                <div>
+                    <p class="text-sm text-gray-500 mb-1">Kategori</p>
+                    @if($pengaduan->kategori)
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800">
+                            {{ $pengaduan->kategori->nama }}
+                        </span>
+                    @else
+                        <p class="text-base text-gray-400">Tidak ada kategori</p>
+                    @endif
+                </div>
                 
                 <div>
                     <p class="text-sm text-gray-500 mb-1">Lokasi</p>
@@ -98,39 +109,122 @@
         </div>
         @endif
 
-        <!-- Update Status & Aksi -->
+        <!-- Progress Pengerjaan (Full CRUD) -->
+        <div class="space-y-6 pt-6 border-t border-gray-200">
+            <h2 class="text-xl font-semibold text-gray-900">Riwayat & Progress Pengerjaan</h2>
+
+            <!-- Timeline List -->
+            <div class="space-y-4">
+                @forelse($pengaduan->progressPengerjaans as $progress)
+                    <div class="flex gap-4 p-4 bg-gray-50 rounded-xl border border-gray-100">
+                        <div class="flex-shrink-0 mt-1">
+                            <span class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-sm">history</span>
+                            </span>
+                        </div>
+                        <div class="flex-1 space-y-2">
+                            <div class="flex justify-between items-start">
+                                <p class="text-sm text-gray-500">{{ $progress->created_at->translatedFormat('d F Y, H:i') }}</p>
+                                <div class="flex gap-2">
+                                    <button onclick="openEditModal('{{ $progress->id }}', '{{ $progress->keterangan }}')" class="text-xs text-blue-600 hover:underline">Edit</button>
+                                    <form action="{{ route('teknisi.progress.destroy', $progress->id) }}" method="POST" onsubmit="return confirm('Hapus progress ini?');" class="inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-xs text-red-600 hover:underline">Hapus</button>
+                                    </form>
+                                </div>
+                            </div>
+                            <p class="text-gray-800">{{ $progress->keterangan }}</p>
+                            @if($progress->foto)
+                                <img src="{{ asset('storage/' . $progress->foto) }}" class="w-24 h-24 object-cover rounded-lg border cursor-pointer" onclick="window.open(this.src)">
+                            @endif
+                        </div>
+                    </div>
+                @empty
+                    <p class="text-gray-500 text-center italic">Belum ada progress yang dilaporkan.</p>
+                @endforelse
+            </div>
+
+            <!-- Form Tambah Progress -->
+            <div class="bg-blue-50 p-6 rounded-xl border border-blue-100">
+                <h3 class="font-semibold text-blue-900 mb-4">Lapor Progress Baru</h3>
+                <form action="{{ route('teknisi.progress.store', $pengaduan->id) }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+                    @csrf
+                    <div>
+                        <label class="block text-sm font-medium text-blue-900 mb-1">Keterangan Aktivitas</label>
+                        <textarea name="keterangan" rows="3" class="w-full rounded-lg border-blue-200 focus:border-blue-500 focus:ring-blue-500 @error('keterangan') border-red-500 @enderror" placeholder="Jelaskan apa yang sudah dikerjakan..." required>{{ old('keterangan') }}</textarea>
+                        @error('keterangan') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-blue-900 mb-1">Foto Bukti (Opsional)</label>
+                        <input type="file" name="foto" class="w-full text-sm text-blue-900 rounded-lg border border-blue-200 cursor-pointer focus:outline-none @error('foto') border-red-500 @enderror">
+                        @error('foto') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+                    </div>
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg text-sm transition">
+                        Kirim Laporan
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Update Status Final -->
         <div class="pt-6 border-t border-gray-200 space-y-4">
-            <h2 class="text-xl font-semibold text-gray-900 mb-4">Update Status & Aksi</h2>
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Update Status Akhir</h2>
             
             <form action="{{ route('teknisi.pengaduan.update', $pengaduan->id) }}" method="POST" class="space-y-4">
                 @csrf
                 <div class="flex flex-col md:flex-row gap-4">
                     <div class="flex-1">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Ubah Status Pengaduan</label>
                         <select name="status" class="w-full rounded-lg border-gray-300 focus:border-red-500 focus:ring-red-500 px-4 py-2">
-                            <option value="">Pilih status baru...</option>
                             <option value="Menunggu" {{ $pengaduan->status == 'Menunggu' ? 'selected' : '' }}>Menunggu</option>
                             <option value="Diproses" {{ $pengaduan->status == 'Diproses' ? 'selected' : '' }}>Diproses</option>
-                            <option value="Selesai" {{ $pengaduan->status == 'Selesai' ? 'selected' : '' }}>Selesai</option>
+                            <option value="Selesai" {{ $pengaduan->status == 'Selesai' ? 'selected' : '' }}>Selesai (Tutup Tiket)</option>
                         </select>
                     </div>
-                    <div class="flex items-end">
-                        <button type="submit" class="w-full md:w-auto bg-red-600 hover:bg-red-700 text-white font-semibold px-6 py-2 rounded-lg transition">
-                            Simpan Status
-                        </button>
-                    </div>
+                    <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-semibold px-6 py-2 rounded-lg transition">
+                        Update Status
+                    </button>
                 </div>
             </form>
-
-            <div>
-                <a href="{{ route('teknisi.pengaduan.dokumentasi', $pengaduan->id) }}" class="w-full md:w-auto bg-gray-800 hover:bg-gray-900 text-white font-semibold px-6 py-2 rounded-lg transition inline-flex items-center gap-2">
-                    <span class="material-symbols-outlined">upload</span>
-                    Upload Dokumentasi Perbaikan
-                </a>
-            </div>
         </div>
     </div>
 
 </div>
+
+<!-- Modal Edit Progress -->
+<div id="editModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-xl p-6 w-full max-w-lg">
+        <h3 class="text-lg font-bold mb-4">Edit Progress</h3>
+        <form id="editForm" method="POST" enctype="multipart/form-data" class="space-y-4">
+            @csrf
+            @method('PUT')
+            <div>
+                <label class="block text-sm font-medium mb-1">Keterangan</label>
+                <textarea id="editKeterangan" name="keterangan" rows="3" class="w-full rounded-lg border-gray-300" required></textarea>
+            </div>
+            <div>
+                <label class="block text-sm font-medium mb-1">Ganti Foto (Opsional)</label>
+                <input type="file" name="foto" class="w-full text-sm border cursor-pointer">
+            </div>
+            <div class="flex justify-end gap-2">
+                <button type="button" onclick="closeEditModal()" class="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg">Batal</button>
+                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Simpan Perubahan</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openEditModal(id, keterangan) {
+        document.getElementById('editModal').classList.remove('hidden');
+        document.getElementById('editKeterangan').value = keterangan;
+        // set action url dynamically
+        document.getElementById('editForm').action = "/teknisi/progress/" + id; 
+    }
+    
+    function closeEditModal() {
+        document.getElementById('editModal').classList.add('hidden');
+    }
+</script>
 @endsection
 

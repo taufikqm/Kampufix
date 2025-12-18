@@ -139,6 +139,18 @@
                         <p class="font-semibold text-gray-900">{{ $pengaduan->subjek }}</p>
                     </div>
                     <div>
+                        <p class="text-gray-500 mb-1">Kategori</p>
+                        <p class="font-semibold text-gray-900">
+                            @if($pengaduan->kategori)
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                    {{ $pengaduan->kategori->nama }}
+                                </span>
+                            @else
+                                <span class="text-gray-400">Tidak ada kategori</span>
+                            @endif
+                        </p>
+                    </div>
+                    <div>
                         <p class="text-gray-500 mb-1">Lokasi</p>
                         <p class="font-semibold text-gray-900">{{ $pengaduan->lokasi ?? 'Tidak tercantum' }}</p>
                     </div>
@@ -201,6 +213,34 @@
                         <p>Diperbaiki oleh: <span class="font-medium text-gray-700">{{ $pengaduan->teknisi->name }}</span></p>
                     </div>
                     @endif
+                </div>
+                @endif
+                
+                <!-- Progress Pengerjaan (Timeline) -->
+                @if($pengaduan->progressPengerjaans->count() > 0)
+                <div class="pt-6 border-t border-gray-200 space-y-4">
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-1">Timeline Pengerjaan</h3>
+                        <p class="text-sm text-gray-500">Update berkala dari teknisi</p>
+                    </div>
+                    <div class="space-y-4">
+                        @foreach($pengaduan->progressPengerjaans as $progress)
+                            <div class="flex gap-4 p-4 bg-gray-50 rounded-xl border border-gray-100">
+                                <div class="flex-shrink-0 mt-1">
+                                    <span class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center">
+                                        <span class="material-symbols-outlined text-sm">history</span>
+                                    </span>
+                                </div>
+                                <div class="flex-1 space-y-1">
+                                    <p class="text-sm text-gray-500">{{ $progress->created_at->translatedFormat('d F Y, H:i') }}</p>
+                                    <p class="text-gray-800">{{ $progress->keterangan }}</p>
+                                    @if($progress->foto)
+                                        <img src="{{ asset('storage/' . $progress->foto) }}" class="w-24 h-24 object-cover rounded-lg border cursor-pointer mt-2" onclick="window.open(this.src)">
+                                    @endif
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
                 </div>
                 @endif
 
