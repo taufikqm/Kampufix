@@ -67,13 +67,7 @@ DB_PASSWORD=
 
 Anda bisa memilih salah satu cara di bawah ini:
 
-**Cara A: Gunakan Data Bawaan (Seeders)**
-Jalankan perintah ini untuk membuat tabel dan akun default baru:
-```bash
-php artisan migrate:fresh --seed
-```
-
-**Cara B: Gunakan Database phpmyadmin (Import SQL)**
+**Gunakan Database phpmyadmin (Import SQL)**
 Jika teman Anda menyertakan file `database.sql`:
 1.  Buka phpMyAdmin.
 2.  Pilih database `kampufix`.
@@ -81,6 +75,12 @@ Jika teman Anda menyertakan file `database.sql`:
 4.  Pilih file `database.sql` yang ada di folder project ini.
 5.  Klik **Go/Kirim**.
 *(Gunakan cara ini agar password & data akun sama persis dengan teman Anda)*
+
+**Alternatif: Gunakan Data Bawaan (Seeders)**
+Jalankan perintah ini untuk membuat tabel dan akun default baru:
+```bash
+php artisan migrate:fresh --seed
+```
 
 ### 6. Jalankan Aplikasi
 
