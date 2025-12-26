@@ -31,30 +31,51 @@
         <p class="text-gray-600 font-semibold mb-8">Silakan masuk untuk melanjutkan</p>
 
         {{-- FORM LOGIN --}}
-        <form action="{{ route('login') }}" method="POST" class="space-y-5">
+        <form action="{{ route('login') }}" method="POST" class="space-y-5" id="loginForm">
             @csrf
+
+            {{-- Display Errors --}}
+            @if ($errors->any())
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-4">
+                    <ul class="list-disc list-inside">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
 
             {{-- Username / Email --}}
             <div>
                 <label class="font-semibold">Nama Pengguna atau Email</label>
-                <div class="flex items-center border rounded-lg mt-1 px-3 bg-gray-50">
+                <div class="flex items-center border rounded-lg mt-1 px-3 bg-gray-50 @error('email') border-red-500 @enderror">
                     <span class="text-gray-500"><i class="fa fa-user"></i></span>
-                    <input type="text" name="email"
+                    <input type="text" name="email" value="{{ old('email') }}"
                            class="w-full p-3 bg-gray-50 focus:outline-none"
-                           placeholder="Masukkan nama pengguna atau email Anda">
+                           placeholder="Masukkan nama pengguna atau email Anda"
+                           required>
                 </div>
+                @error('email')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
             </div>
 
             {{-- Password --}}
             <div>
                 <label class="font-semibold">Kata Sandi</label>
-                <div class="flex items-center border rounded-lg mt-1 px-3 bg-gray-50">
+                <div class="flex items-center border rounded-lg mt-1 px-3 bg-gray-50 @error('password') border-red-500 @enderror">
                     <span class="text-gray-500"><i class="fa fa-lock"></i></span>
-                    <input type="password" name="password"
+                    <input type="password" name="password" id="password"
                            class="w-full p-3 bg-gray-50 focus:outline-none"
-                           placeholder="Masukkan kata sandi Anda">
-                    <span class="text-gray-500 cursor-pointer"><i class="fa fa-eye"></i></span>
+                           placeholder="Masukkan kata sandi Anda"
+                           required>
+                    <span class="text-gray-500 cursor-pointer" onclick="togglePassword()">
+                        <i class="fa fa-eye" id="eyeIcon"></i>
+                    </span>
                 </div>
+                @error('password')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
             </div>
 
             {{-- Lupa kata sandi --}}
@@ -63,8 +84,8 @@
             </div>
 
             {{-- Tombol Login --}}
-            <button 
-                class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 rounded-lg text-lg">
+            <button type="submit"
+                    class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 rounded-lg text-lg">
                 Masuk
             </button>
 
@@ -75,6 +96,31 @@
 
 {{-- Ikon FontAwesome (untuk icon user & lock) --}}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+
+<script>
+function togglePassword() {
+    const passwordInput = document.getElementById('password');
+    const eyeIcon = document.getElementById('eyeIcon');
+    
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        eyeIcon.classList.remove('fa-eye');
+        eyeIcon.classList.add('fa-eye-slash');
+    } else {
+        passwordInput.type = 'password';
+        eyeIcon.classList.remove('fa-eye-slash');
+        eyeIcon.classList.add('fa-eye');
+    }
+}
+
+// Debug: Log form submission
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+    console.log('Form submitted!');
+    const formData = new FormData(this);
+    console.log('Email:', formData.get('email'));
+    console.log('Has password:', !!formData.get('password'));
+});
+</script>
 
 </body>
 </html>

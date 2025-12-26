@@ -66,6 +66,22 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // Feedback Routes
     Route::get('/admin/feedback', [\App\Http\Controllers\Admin\AdminFeedbackController::class, 'index'])
         ->name('admin.feedback.index');
+
+    // Teknisi Routes
+    Route::get('/admin/teknisi', [\App\Http\Controllers\Admin\AdminTeknisiController::class, 'index'])
+        ->name('admin.teknisi.index');
+    Route::get('/admin/teknisi/create', [\App\Http\Controllers\Admin\AdminTeknisiController::class, 'create'])
+        ->name('admin.teknisi.create');
+    Route::post('/admin/teknisi', [\App\Http\Controllers\Admin\AdminTeknisiController::class, 'store'])
+        ->name('admin.teknisi.store');
+    Route::get('/admin/teknisi/{id}/edit', [\App\Http\Controllers\Admin\AdminTeknisiController::class, 'edit'])
+        ->name('admin.teknisi.edit');
+    Route::put('/admin/teknisi/{id}', [\App\Http\Controllers\Admin\AdminTeknisiController::class, 'update'])
+        ->name('admin.teknisi.update');
+    Route::delete('/admin/teknisi/{id}', [\App\Http\Controllers\Admin\AdminTeknisiController::class, 'destroy'])
+        ->name('admin.teknisi.destroy');
+    Route::patch('/admin/teknisi/{id}/toggle-duty', [\App\Http\Controllers\Admin\AdminTeknisiController::class, 'toggleDuty'])
+        ->name('admin.teknisi.toggle-duty');
 });
 
 Route::middleware(['auth', 'role:teknisi'])->group(function () {
