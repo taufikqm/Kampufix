@@ -19,6 +19,10 @@ class User extends Authenticatable
         'password',
         'role', // 'admin' atau 'mahasiswa'
         'profile_photo_path',
+        'on_duty',
+        'phone',
+        'specialization',
+        'address',
     ];
 
     /**
@@ -37,6 +41,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed', // Laravel otomatis hash
+            'on_duty' => 'boolean',
         ];
     }
 
@@ -70,5 +75,21 @@ class User extends Authenticatable
     public function isTeknisi()
     {
         return $this->role === 'teknisi';
+    }
+
+    /**
+     * Scope untuk filter teknisi on duty
+     */
+    public function scopeOnDuty($query)
+    {
+        return $query->where('on_duty', true);
+    }
+
+    /**
+     * Scope untuk filter role teknisi
+     */
+    public function scopeTeknisi($query)
+    {
+        return $query->where('role', 'teknisi');
     }
 }

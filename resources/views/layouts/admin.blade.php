@@ -85,6 +85,13 @@
                         <span class="material-symbols-outlined">feedback</span>
                         <p class="text-sm font-medium">Feedback Pengguna</p>
                     </a>
+
+                    <!-- Menu Teknisi -->
+                    <a href="{{ route('admin.teknisi.index') }}"
+                       class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('admin.teknisi.*') ? 'text-red-600 bg-red-50' : 'text-gray-600 hover:bg-red-50' }}">
+                        <span class="material-symbols-outlined">engineering</span>
+                        <p class="text-sm font-medium">Manajemen Teknisi</p>
+                    </a>
                 </nav>
                 </div>
             </div>

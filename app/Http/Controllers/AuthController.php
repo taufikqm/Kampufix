@@ -23,10 +23,28 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
+        // Debug: Log credentials (jangan log password di production!)
+        \Log::info('Login attempt', [
+            'email' => $credentials['email'],
+            'has_password' => !empty($credentials['password'])
+        ]);
+
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
+            
+            // Debug: Log successful auth
+            \Log::info('Auth successful', [
+                'user_id' => Auth::id(),
+                'user_role' => Auth::user()->role
+            ]);
+            
             return $this->redirectByRole();
         }
+
+        // Debug: Log failed auth
+        \Log::warning('Auth failed', [
+            'email' => $credentials['email']
+        ]);
 
         return back()->withErrors([
             'email' => 'Email atau password salah.',
