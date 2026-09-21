@@ -112,14 +112,6 @@ function togglePassword() {
         eyeIcon.classList.add('fa-eye');
     }
 }
-
-// Debug: Log form submission
-document.getElementById('loginForm').addEventListener('submit', function(e) {
-    console.log('Form submitted!');
-    const formData = new FormData(this);
-    console.log('Email:', formData.get('email'));
-    console.log('Has password:', !!formData.get('password'));
-});
 </script>
 
 </body>
